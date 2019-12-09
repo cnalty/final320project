@@ -2,7 +2,7 @@ from selenium import webdriver
 
 def main():
 
-    driver = webdriver.Chrome("F:/Downloads/chromedriver_win32/chromedriver.exe") # change this to whereever your driver is
+    driver = webdriver.Chrome("F:/Downloads/chromedriver_win32/chromedriver.exe") # change this to wher eever your driver is
 
     # select division one button, since that's all we care about, will stay persistent
     driver.get("http://web1.ncaa.org/stats/StatsSrv/rankings?sportCode=MBB")
