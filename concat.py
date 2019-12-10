@@ -1,6 +1,7 @@
 import pandas
 import os
 import io
+import re
 
 data = {}
 # walk the files saved from the data download
@@ -33,10 +34,14 @@ for _, _, files in os.walk('data'):
             data[date] = pandas.read_csv(io.StringIO(csv))
 df = pandas.DataFrame(pandas.np.empty((0, 2)))
 df.columns = ['Date', 'Data']
-i = 0
+
+if not os.path.isdir("dfs"):
+    os.mkdir("dfs")
+
 for k in data.keys():
-    i = i + 1
-    df.loc[i] = [k, data[k]]
+    data[k] = data[k].drop("Rank", axis=1)
+    dash_date = re.sub(r"/", "-", k)
+    data[k].to_csv(os.path.join("dfs/", dash_date + ".csv"))
 df.to_csv("data.csv")
 
 
