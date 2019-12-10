@@ -18,12 +18,11 @@ for _, _, files in os.walk('data'):
             for line in s.splitlines():
                 if i == 8:
                     date = line[14:]
-                if i > 10 and i < 363 or i == 364 or i == 365 and "," in line:
+                if (i > 10 and i < 363 or i == 364 or i == 365) and "," in line:
                     csv += line+"\n"
                     if len(line) > 85:
                         print(line)
                 i = i + 1
-        print(date)
         if date in data:
             ndata = pandas.read_csv(io.StringIO(csv))
             for c1 in data[date].columns:
@@ -32,5 +31,12 @@ for _, _, files in os.walk('data'):
             data[date] = data[date].merge(ndata)
         else:
             data[date] = pandas.read_csv(io.StringIO(csv))
-        #print(data[date])
-pandas.DataFrame.from_dict([data]).to_csv("data.csv")
+df = pandas.DataFrame(pandas.np.empty((0, 2)))
+df.columns = ['Date', 'Data']
+i = 0
+for k in data.keys():
+    i = i + 1
+    df.loc[i] = [k, data[k]]
+df.to_csv("data.csv")
+
+
