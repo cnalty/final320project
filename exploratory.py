@@ -1,6 +1,7 @@
 import pandas as pd
 import re
-import os
+import pickle
+
 
 ranks = pd.read_csv("apranks.csv") # found here https://www.sports-reference.com/cbb/seasons/2019-polls.html
 
@@ -35,6 +36,9 @@ print(new_ranks.head())
 
 # Now that we've cleaned the ranks data we can do some analysis on stats by rankings
 
+serial_f = "dfs.dict"
+dfs = pickle.load(open(serial_f, 'rb'))
 
-
+for k, v in dfs.items():
+    print(v.head())
 
