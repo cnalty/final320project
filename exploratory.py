@@ -1,6 +1,7 @@
 import pandas as pd
 import re
 import pickle
+import matplotlib.pyplot as plt
 
 
 ranks = pd.read_csv("apranks.csv") # found here https://www.sports-reference.com/cbb/seasons/2019-polls.html
@@ -39,6 +40,31 @@ print(new_ranks.head())
 serial_f = "dfs.dict"
 dfs = pickle.load(open(serial_f, 'rb'))
 
-for k, v in dfs.items():
-    print(v.head())
 
+# Ratio is assist turnover ratio
+# APG is assists per game
+# A is attempts not average
+# PFPG is personal fouls per game
+# Reb Marg is rebound margin
+# SCR MAR scoring margin
+# STPG steals per game
+# useful stats TO / G, APG, BKPG, RPG, FG%, OPP FG%, FT%, PFPG, REB MARG, SCR MAR, STPG, 3PG, 3FG%
+
+rank1s = new_ranks[1]
+
+print(rank1s)
+
+
+# Next lets graph some of the stats for rank #1 that are likely important to them winning
+stats_to_graph = ["APG", "BKPG", "RPG", "FG%", "PFPG", "SCR MAR", "STPG", "3FG%"]
+t_cols = {'Duke':'b', 'Gonzaga':'g', 'Kansas':'r', 'Tennessee':'m'}
+for stat in stats_to_graph:
+    for index in rank1s.index:
+        if index in dfs.keys():
+            curr_y = dfs[index].loc[dfs[index]['Name'] == rank1s[index]][stat].values[0]
+            plt.scatter(index, curr_y, c=t_cols[rank1s[index]], label=rank1s[index])
+            plt.annotate(rank1s[index], (index, curr_y))
+    #plt.legend(t_cols.keys(), t_cols.values())
+    plt.title(stat)
+
+    plt.show()
