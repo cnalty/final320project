@@ -4,9 +4,10 @@ import io
 import re
 import pickle
 
+# the data dictionary
 data = {}
-# walk the files saved from the data download
 
+# walk the files saved from the data download
 for _, _, files in os.walk('data'):
     for file in files:
         csv = ""
@@ -20,11 +21,14 @@ for _, _, files in os.walk('data'):
             for line in s.splitlines():
                 if i == 8:
                     date = line[14:]
+                # every file is identical, so these are the known lines which will contribute to the data
                 if (i > 10 and i < 363 or i == 364 or i == 365) and "," in line:
                     csv += line+"\n"
                     if len(line) > 85:
                         print(line)
                 i = i + 1
+        # read the csv string and add to the dictionary if the data doesn't exist, or add to a dataframe in the
+        # dictionary if it does exist
         if date in data:
             ndata = pandas.read_csv(io.StringIO(csv))
             for c1 in data[date].columns:
@@ -37,9 +41,20 @@ for _, _, files in os.walk('data'):
 if not os.path.isdir("dfs"):
     os.mkdir("dfs")
 
-for k in data.keys():
-    data[k] = data[k].drop("Rank", axis=1)
+for date in data.keys():
+    # drop the rank column for each dataframe
+    data[date] = data[date].drop("Rank", axis=1)
 
+    # create win, win percent column and loss column
+    data[date] = data[date].append(data[date]["W-L"].str.extract(r"(\d+)-(\d+)"))
+    data[date]["Wins"] = data[date][0].astype(float)
+    data[date]["Losses"] = data[date][1].astype(float)
+    data[date]["Win%"] = data[date]["Wins"]/data[date]["Losses"]
+
+    # drop columns that are unneeded
+    data[date] = data[date].drop(1, axis=1)
+    data[date] = data[date].drop(0, axis=1)
+    data[date] = data[date].drop("W-L", axis=1)
 
 serial_f = "dfs.dict"
 
