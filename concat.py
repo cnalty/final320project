@@ -34,8 +34,6 @@ for _, _, files in os.walk('data'):
         else:
             data[date] = pandas.read_csv(io.StringIO(csv))
 
-if not os.path.isdir("dfs"):
-    os.mkdir("dfs")
 
 for date in data.keys():
     # drop the rank column for each dataframe
