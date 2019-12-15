@@ -3,7 +3,6 @@ import re
 import pickle
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-import difflib
 
 ranks = pd.read_csv("apranks.csv") # found here https://www.sports-reference.com/cbb/seasons/2019-polls.html
 
@@ -27,8 +26,6 @@ for elem in ranks.columns:
 
 print(new_ranks.head())
 
-
-
 # now we transpose the table to have the dates as the index as desired and add the year
 # We're also going to rename the Final column to 3/18/2019, the date they were released
 
@@ -36,7 +33,7 @@ new_ranks = new_ranks.transpose()
 
 new_ranks = new_ranks.rename(index=lambda x: re.sub("^0.*", x + "/2019", x))
 new_ranks = new_ranks.rename(index=lambda x: re.sub("^1.*", x + "/2018", x))
-new_ranks = new_ranks.rename(index=lambda x: re.sub("Final", '03/21/2019', x))
+new_ranks = new_ranks.rename(index=lambda x: re.sub("Final", '03/18/2019', x))
 
 print(new_ranks.head())
 
@@ -44,23 +41,6 @@ print(new_ranks.head())
 
 serial_f = "dfs.dict"
 dfs = pickle.load(open(serial_f, 'rb'))
-
-# Lets check to make sure every date in our ranks column is in our games column to make sure we have easy data access
-for date in new_ranks.index:
-    if date not in dfs.keys():
-        print(date)
-        # here we can see candidates
-        print(difflib.get_close_matches(date, dfs.keys()))
-
-
-print("------")
-
-
-# since we're missing a few dates, let's replace them with days games were played to make them consistent while still
-# keeping the information matched with the relevant data, this means we want to make it the closest date after the ranks were released
-
-new_ranks = new_ranks.rename(index=lambda x: re.sub("12/24/2018", '12/25/2018', x))
-new_ranks = new_ranks.rename(index=lambda x: re.sub("02/11/2019", '02/19/2019', x))
 
 
 # Ratio is assist turnover ratio
