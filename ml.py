@@ -1,6 +1,6 @@
 import pandas as pd
 import pickle
-
+import json
 
 serial_f = "dfs.dict"
 dfs = pickle.load(open(serial_f, 'rb'))
@@ -17,7 +17,15 @@ print(scores.head())
 stats_to_use = stats_to_graph = ["BKPG", "FG%", "OPP FG%", "PFPG",
                                 "STPG", "3FG%", "FT%", "REB MAR", "Ratio"]
 
+with open("matches.json", 'r') as j:
+    matches = json.load(j)
 
+matches_rev = {}
+for k, v in matches.items():
+    matches_rev[v] = k
+
+scores = scores.replace(matches_rev)
+print(scores.head())
 # First we need to randomize the data frame so we can randomly pick an even number of games where Team1 is the winner
 # and where Team2 is the winner
 scores = scores.sample(frac=1).reset_index(drop=True)
@@ -35,34 +43,32 @@ for index, row in scores.iterrows():
     y_setup.append(curr)
 
 # now we want to get the statistics we're going to be using for each team and line them up with the teams
-import difflib
-import json
 
-matches = {}
-
-for name in set(scores['win_team'].tolist()):
-    if name not in dfs['04/08/2019']['Name'].tolist():
-        closests = difflib.get_close_matches(name, dfs['04/08/2019']['Name'])
-        if len(closests) == 0:
-            print(name)
-        else:
-            matches[closests[0]] = name
-
-js = json.dumps(matches)
-with open("matches", 'w+') as f:
-    f.write(js)
 
 
 y = [val[2] for val in y_setup]
 xs = []
+total_missing = 0
+wrong_names = set()
 for result in y_setup:
     date = result[3]
     if date not in dfs.keys():
         continue
+    if set(stats_to_use).issubset(set(dfs[date].columns)):
+        print(dfs[date]["Name"].values)
+        if result[0] not in dfs[date]["Name"].values:
+            wrong_names.add(result[0])
+        if result[1] not in dfs[date]["Name"].values:
+            wrong_names.add(result[1])
+        #team1_stats = [dfs[date][dfs[date]["Name"] == result[0]][stat] for stat in stats_to_use]
+        #team2_stats = [dfs[date][dfs[date]["Name"] == result[1]][stat] for stat in stats_to_use]
+        #team1_stats.extend(team2_stats)
+        #xs.append(team1_stats)
+    else:
+        total_missing += 1
 
-    #team1_stats = [dfs[date].loc["Name" == result[0]][stat] for stat in stats_to_use]
-    #team2_stats = [dfs[date].loc["Name" == result[1]][stat] for stat in stats_to_use]
-    #team1_stats.extend(team2_stats)
-    #xs.append(team1_stats)
+print(wrong_names)
+print(len(wrong_names))
+print("Oklahoma" in dfs["04/08/2019"]["Name"].values)
+print(xs[0])
 
-#print(xs[0])
