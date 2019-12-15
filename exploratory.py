@@ -129,3 +129,4 @@ for stat in stats_to_graph:
     average team in Division 1. There are are a couple stats, such as Steals Per Game, where Tennessee is worse than the
     average, and 3-point field goal percentage where Duke is below average in the later half of the season, but outside
     these two occurrences it's clear these teams outperform most of the Division'''
+
