@@ -29,7 +29,7 @@ for stat in stats_to_graph:
     plt.scatter(dfs['04/08/2019'][stat].dropna(), dfs['04/08/2019']["Win%"].dropna())
 
     # set the graph labels
-    plt.xlabel(stat)
+    plt.xlabel(stats_to_name[stat])
     plt.ylabel("Win Percent")
     plt.title(stats_to_name[stat] + " vs Win Percent")
 
