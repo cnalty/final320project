@@ -46,29 +46,48 @@ for index, row in scores.iterrows():
 
 
 
-y = [val[2] for val in y_setup]
+y = []
 xs = []
-total_missing = 0
-wrong_names = set()
 for result in y_setup:
     date = result[3]
     if date not in dfs.keys():
         continue
     if set(stats_to_use).issubset(set(dfs[date].columns)):
-        print(dfs[date]["Name"].values)
-        if result[0] not in dfs[date]["Name"].values:
-            wrong_names.add(result[0])
-        if result[1] not in dfs[date]["Name"].values:
-            wrong_names.add(result[1])
-        #team1_stats = [dfs[date][dfs[date]["Name"] == result[0]][stat] for stat in stats_to_use]
-        #team2_stats = [dfs[date][dfs[date]["Name"] == result[1]][stat] for stat in stats_to_use]
-        #team1_stats.extend(team2_stats)
-        #xs.append(team1_stats)
-    else:
-        total_missing += 1
 
-print(wrong_names)
-print(len(wrong_names))
-print("Oklahoma" in dfs["04/08/2019"]["Name"].values)
+        if result[0] not in dfs[date]["Name"].values:
+            continue
+        if result[1] not in dfs[date]["Name"].values:
+            continue
+        team1_stats = [dfs[date][dfs[date]["Name"] == result[0]][stat].values[0] for stat in stats_to_use]
+        team2_stats = [dfs[date][dfs[date]["Name"] == result[1]][stat].values[0] for stat in stats_to_use]
+        team1_stats.extend(team2_stats)
+        xs.append(team1_stats)
+        y.append(result[2])
+
 print(xs[0])
+print(len(xs))
+print(len(y))
+
+print(sum(y))
+
+
+from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score, ShuffleSplit
+
+sv = SVC()
+lr = LogisticRegression()
+rfc = RandomForestClassifier()
+
+cv = ShuffleSplit(n_splits=10, test_size=0.3, random_state=0)
+svc_score = cross_val_score(sv, xs, y, cv=cv)
+print(svc_score)
+cv = ShuffleSplit(n_splits=10, test_size=0.3, random_state=0)
+lr_score = cross_val_score(lr, xs, y, cv=cv)
+print(lr_score)
+cv = ShuffleSplit(n_splits=10, test_size=0.3, random_state=0)
+rfc_score = cross_val_score(rfc, xs, y, cv=cv)
+print(rfc_score)
+
 
