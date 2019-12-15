@@ -12,14 +12,16 @@ print(scores.head())
 
 #print(dfs.keys())
 
-''' We choose to omit Scoring margin from '''
+''' We choose to omit Scoring margin from our models inputs even though it had a very strong correlation with win rate.
+This is because it is an example of data leakage. Data leakage is when we give our model information it shouldn't have 
+make predictions. We shouldn't be giving our model scoring margin, because this statistic has information about if a team
+is winning or not. We do not want our models to have the information of who won or who lost to do this exact prediction.'''
 
 stats_to_use = stats_to_graph = ["BKPG", "FG%", "OPP FG%", "PFPG",
                                 "STPG", "3FG%", "FT%", "REB MAR", "Ratio"]
 
 with open("matches.json", 'r') as j:
     matches = json.load(j)
-
 matches_rev = {}
 for k, v in matches.items():
     matches_rev[v] = k
