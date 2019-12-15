@@ -17,8 +17,8 @@ This is because it is an example of data leakage. Data leakage is when we give o
 make predictions. We shouldn't be giving our model scoring margin, because this statistic has information about if a team
 is winning or not. We do not want our models to have the information of who won or who lost to do this exact prediction.'''
 
-stats_to_use = stats_to_graph = ["BKPG", "FG%", "OPP FG%", "PFPG",
-                                "STPG", "3FG%", "FT%", "REB MAR", "Ratio"]
+stats_to_use = ["BKPG", "FG%", "OPP FG%", "PFPG",
+                "STPG", "3FG%", "FT%", "REB MAR", "Ratio"]
 
 with open("matches.json", 'r') as j:
     matches = json.load(j)
@@ -32,7 +32,6 @@ print(scores.head())
 # and where Team2 is the winner
 scores = scores.sample(frac=1).reset_index(drop=True)
 
-print(scores.head())
 #team1, team2, winner, date
 
 y_setup = []
