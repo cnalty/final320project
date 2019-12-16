@@ -91,6 +91,7 @@ for stat in stats_to_graph:
             plt.scatter(index, curr_y, c=t_cols[rank1s[index]])
 
     plt.title(stat)
+    plt.xticks(rotation=70)
     plt.legend(handles=patches)
     plt.show()
 
@@ -121,10 +122,11 @@ for stat in stats_to_graph:
             avgs.append(dfs[index][stat].mean())
     plt.plot(dates, avgs, c=t_cols['Average'])
     plt.title(stat)
+    plt.xticks(rotation=70)
     plt.legend(handles=patches)
     plt.show()
 
-'''We can see that even though the number one ranked team doesn't seem to lean on any one stat they excel comparted to 
+'''We can see that even though the number one ranked team doesn't seem to lean on any one stat they excel compared to 
     average team in Division 1. There are are a couple stats, such as Steals Per Game, where Tennessee is worse than the
     average, and 3-point field goal percentage where Duke is below average in the later half of the season, but outside
     these two occurrences it's clear these teams outperform most of the Division'''
